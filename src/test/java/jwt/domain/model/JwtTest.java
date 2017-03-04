@@ -3,9 +3,12 @@ package jwt.domain.model;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JwtTest {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JwtTest.class);
 
 	private static final String THE_AUDIENCE = "CokeCoinsApi";
 	private static final String THE_ISSUER = "CokeCoinsAdmin";
@@ -38,7 +41,7 @@ public class JwtTest {
 		final JwtVerifier verifier = new HmacSecretJwtVerifier(THE_ISSUER, THE_AUDIENCE, HMAC_SUPER_SECRET_KEY);
 
 		final String sign = signer.sign();
-		System.out.println("Sleeping 11s to cause token expiration");
+		LOGGER.info("Sleeping 11s to cause token expiration");
 		Thread.sleep(11000);
 		verifier.verify(sign);
 		fail("JWT should be expired after 10 seconds");
@@ -47,7 +50,8 @@ public class JwtTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void verificationOfExpiredTokenShouldFail() {
 		final JwtVerifier verifier = new HmacSecretJwtVerifier(THE_ISSUER, THE_AUDIENCE, HMAC_SUPER_SECRET_KEY);
-		verifier.verify("eyJraWQiOiJrMSIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJDb2tlQ29pbnNBZG1pbiIsImF1ZCI6IkNva2VDb2luc0FwaSIsImV4cCI6MTQ1MTUxMjAyMCwianRpIjoiN04zUkRsR25oMUV6MHVISEhteEJpZyIsImlhdCI6MTQ1MTUxMjAxMCwibmJmIjoxNDUxNTExODkwLCJzdWIiOiJzdWJqZWN0IiwiZW1haWwiOiJtYWlsQGV4YW1wbGUuY29tIiwiZ3JvdXBzIjpbImdyb3VwLW9uZSIsIm90aGVyLWdyb3VwIiwiZ3JvdXAtdGhyZWUiXX0.XUuBz4KH-a7KAeBrBHQSUv7cbjSvJ6xA0Uxgm8mK7jI");
+		verifier.verify(
+				"eyJraWQiOiJrMSIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJDb2tlQ29pbnNBZG1pbiIsImF1ZCI6IkNva2VDb2luc0FwaSIsImV4cCI6MTQ1MTUxMjAyMCwianRpIjoiN04zUkRsR25oMUV6MHVISEhteEJpZyIsImlhdCI6MTQ1MTUxMjAxMCwibmJmIjoxNDUxNTExODkwLCJzdWIiOiJzdWJqZWN0IiwiZW1haWwiOiJtYWlsQGV4YW1wbGUuY29tIiwiZ3JvdXBzIjpbImdyb3VwLW9uZSIsIm90aGVyLWdyb3VwIiwiZ3JvdXAtdGhyZWUiXX0.XUuBz4KH-a7KAeBrBHQSUv7cbjSvJ6xA0Uxgm8mK7jI");
 	}
 
 }
