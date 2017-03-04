@@ -36,7 +36,7 @@ public class JwtServletFilter implements Filter {
 		final HttpServletRequest r = (HttpServletRequest) request;
 		final HttpServletResponse e = (HttpServletResponse) response;
 
-		if (r.getMethod().equalsIgnoreCase("options")) {
+		if ("options".equalsIgnoreCase(r.getMethod())) {
 			LOGGER.trace("OPTIONS method, probably for CORS. You can pass.");
 			chain.doFilter(r, e);
 			return;
@@ -52,7 +52,7 @@ public class JwtServletFilter implements Filter {
 		// remove schema from token
 		final String authorizationSchema = "Bearer";
 		if (authorizationHeader.indexOf(authorizationSchema) == -1) {
-			LOGGER.trace("Invalid authorization schema. Expected: Bearer <token>, but was: " + authorizationHeader);
+			LOGGER.trace("Invalid authorization schema. Expected: Bearer <token>, but was: {}", authorizationHeader);
 			e.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
@@ -62,7 +62,7 @@ public class JwtServletFilter implements Filter {
 			verifier.verify(jwtToken);
 			chain.doFilter(r, e);
 		} catch (final IllegalArgumentException ex) {
-			LOGGER.trace("Invalid JWT Token: " + ex.getCause().getMessage());
+			LOGGER.trace("Invalid JWT Token: " + ex.getCause().getMessage(), ex);
 			e.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 	}
