@@ -16,8 +16,6 @@ public abstract class AbstractJwtVerifier implements JwtVerifier {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HmacSecretJwtVerifier.class);
 
-	protected abstract Key getVerificationKey();
-
 	protected final String expectedIssuer;
 	protected final String expectedAudience;
 
@@ -27,6 +25,8 @@ public abstract class AbstractJwtVerifier implements JwtVerifier {
 		this.expectedAudience = expectedAudience;
 	}
 
+	protected abstract Key getVerificationKey();
+	
 	@Override
 	public JwtClaims verify(final String jwt) {
 		try {
